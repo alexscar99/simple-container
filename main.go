@@ -1,5 +1,7 @@
 package main
 
+// Taken from talk given by @lizrice: https://gist.github.com/lizrice/a5ef4d175fd0cd3491c7e8d716826d27
+
 import (
 	"fmt"
 	"os"
