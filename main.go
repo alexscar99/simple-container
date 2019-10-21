@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"syscall"
 )
 
 func main() {
@@ -23,6 +24,22 @@ func run() {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	/*
+		SysProcAttr holds optional, operating system-specific attributes.
+		Run passes it to os.StartProcess as the os.ProcAttr's Sys field.
+
+		SysProcAttr is a struct that has a field of 'Cloneflags' that is
+		of type 'uintptr' and it flags for clone calls (only on Linux).
+
+		We're only going to pass in one flag and it is 'syscall.CLONE_NEWUTS'.
+		This will clone a new UTS (Unix Time Sharing), which is the
+		namespace that specifically isolates the hostname.
+	*/
+
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Cloneflags: syscall.CLONE_NEWUTS,
+	}
 
 	must(cmd.Run())
 }
